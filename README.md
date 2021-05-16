@@ -74,7 +74,9 @@ const client=OpenIDClient(client_id,client_secret,service_token);
 ```
 Here we can do three things:
 1- Verify Login: this do using the boolean function `client.verifySignature({expire,mid,secret,sid,sig})`;
+
 2- Get User Data from VK: ` const user=client.getUserProfile(mid);`
+
 3- Verify Login and Get User Data `client.verifyUserData({expire,mid,secret,sid,sig}).then(result=>{let user=result});`
 
 
