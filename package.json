@@ -9,6 +9,10 @@
   "keywords": [
     "VK",
     "Authentication",
+    "Authorization",
+    "access_token",
+    "service_token",
+    "VKontakte",
     "OAuth",
     "OpenID",
     "Open",
