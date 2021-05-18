@@ -1,7 +1,7 @@
 This package supports two different type of Server-Side Authentication/Authorization Using VK.
 
-1-OAuth
-2-Open API (OpenID)
+1-OAuth (For a simple example see [this](https://github.com/abdollahkahne/vk-oauth-sample))
+2-Open API (OpenID) (As an simple example see [this](https://github.com/abdollahkahne/vk-openapi-sample) )
 
 For more information about other type of authentication and information abouth them in VK please visit this [discussion](https://github.com/abdollahkahne/Auth/discussions/2) in GitHub
 
@@ -97,4 +97,4 @@ Here we can do three things:
 
 2- Get User Data from VK: ` const user=client.getUserProfile(mid);`
 
-3- Verify Login and Get User Data `client.verifyUserData({expire,mid,secret,sid,sig}).then(result=>{let user=result});`
+3- Verify Login and Get User Data `client.verifyUserData({expire,mid,secret,sid,sig}).then(result=>{let {user}=result});`
