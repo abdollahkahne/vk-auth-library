@@ -1,24 +1,24 @@
 This package supports two different type of Server-Side Authentication/Authorization Using VK.
 
-1-OAuth (For a simple example see [this](https://github.com/abdollahkahne/vk-oauth-sample)): This can be used for Both authentication and authorization. With this method you specify a callback for your app first. Int the client-side you only add a link to VK Authorize endpoint as described below. In Server-Side you implement the callback-uri you specify for your app and get an access token and user information. If you want to use other VK API in server-side, you can use that access token there. So it is some sort of Authorization too.
+1-**OAuth** (For a simple example see [this](https://github.com/abdollahkahne/vk-oauth-sample)): This can be used for Both authentication and authorization. With this method you specify a callback for your app first. Int the client-side you only add a link to VK Authorize endpoint as described below. In Server-Side you implement the **callback-uri you specify for your app** and get an access token and user information. If you want to use other VK API in **server-side** (in behalf of user), you can use that access token there. So it is some sort of Authorization too.
 
-2-Open API (OpenID) (As an simple example see [this](https://github.com/abdollahkahne/vk-openapi-sample) ): This only used for authentication. Here you can add an script from VK to client side and then for verification you can implement an API at the backend (with arbitary url) and verify user login in server-side and also get User Info (In behalf of your app). In this case if you want call other API you can only use the VK Script at client side (in behalf of user)
+2-**Open API (OpenID)** (As an simple example see [this](https://github.com/abdollahkahne/vk-openapi-sample) ): This only used for authentication in server-side. Here you can add an script from VK to client side and then for verification you can implement an API at the backend (**with arbitary url**) and verify user login in server-side and also get User Info (In behalf of your app). In this case if you want call other API you can only use the VK Script at **client-side** (in behalf of user)
 
 For more information about other type of authentication and information abouth them in VK please visit this [discussion](https://github.com/abdollahkahne/Auth/discussions/2) in GitHub
 
 ### OAuth
-The client side implementation of this method is described in an article at VK: [Authorization Cod Flow](https://vk.com/dev/authcode_flow_user)
+The client side implementation of this method is described in an article at VK: [Authorization Code Flow](https://vk.com/dev/authcode_flow_user). 
 
-For Complete Server-Side OAuth Authorization the following Steps should be done:
+For Complete **Server-Side OAuth Authentication/Authorization** the following Steps should be done:
 
-1- First you should create a link in your code and handle it using button onClick event handler/anchor `href`. This link is in the following format:
+1- In **client-side**, you create a hyperlink in your UI in the form of `a` or `button`. This link is in the following format:
 
 `https://oauth.vk.com/authorize?client_id=1&display=page&redirect_uri=http://example.com/callback&scope=friends&response_type=code&v=5.130`
 
-You can read important noted about this link in VK development documents but consider that `redirect_uri` and `response_type` are the most important here. `redirect_uri` should be first set at App setting in VK and this is the route that you handle server-side part of work. Also you should set r`esponse_type=code` to be able to run APIs in Server. Otherwise in (`response_type=token`) the token only can be used at the same ip.
+You can read important notes about this link in [here]((https://vk.com/dev/authcode_flow_user)), but consider that `redirect_uri` and `response_type` are the most important here. `redirect_uri` should be first set at App setting in VK and this is the route that you handle server-side part of work. Also you should set `response_type=code` to be able to run APIs in Server (for example to verify request genuinety). 
 
 
-2- In controller/middlewares implemented for the `redirect_uri `you can implement the following to verify the Authentication and simulatenousely get the user data directly from VK in the backend not from the client side:
+2- In **Server-Side** the `redirect_uri` you specified in link should be implemented. Here is where this package comes to work. we use the following code to verify the Authentication and simulatenousely get the user data directly from VK in the backend and not from the client side:
 
 
 ```
@@ -29,7 +29,7 @@ const client=OAuthClient(client_id,client_secret,redirect_uri);
 
 note that here the `redirect_uri` should be same as what is used in the client side and also what is defined in App setting.
 
-then use the created client to get `access_token` and `user_id` and `user` data in the following way:
+then use the created **client** to get `access_token` and `user_id` and `user` data in the following way (you also get a access_token here for further API_requests in behlaf of User):
 
 
 ```
@@ -38,8 +38,11 @@ client.verifyUserData(code).then(result=>{
 });
 ```
 
- Note that you can only use the received code from the VK once and after that, it is expired.
-  So if you plan to use other API methods too, save `access_token` and `user_id` too. As an alternative you can use the following method first to get `access_token` and `user_id`  and then use that **token** and **user id** to do other API method calls. If you want to get User can do it directly with following method in library
+ Note that **you can only use the received code from the VK once** and after that, it is expired.
+ 
+  So if you plan to use other API methods later **in Server and in Behalf of User**, save the received `access_token` and `user_id` in a variable for more use.
+  
+  As an alternative, can get this token with the following code too and then use the API Call to get User General Information (first_name,last_name,id)
 
 ```
 client.getAccessToken(code).then(result=>{
@@ -47,7 +50,7 @@ client.getAccessToken(code).then(result=>{
 });
 ```
 
-Here you can get User Info from the API or using the following method:
+If You have access_token and user_id, you can get the general User Info using the following method too:
 `const user=await client.getUserProfile(user_id,access_token);`
 
 
