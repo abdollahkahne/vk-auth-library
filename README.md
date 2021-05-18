@@ -5,7 +5,7 @@ This package supports two different type of Server-Side Authentication/Authoriza
 
 For more information about other type of authentication and information abouth them in VK please visit this [discussion](https://github.com/abdollahkahne/Auth/discussions/2) in GitHub
 
-### OAuth 
+### OAuth
 The client side implementation of this method is described in an article at VK: [Authorization Cod Flow](https://vk.com/dev/authcode_flow_user)
 
 For Complete Server-Side OAuth Authorization the following Steps should be done:
@@ -26,6 +26,8 @@ const {OAuthClient}=require("vk-auth-library");
 const client=OAuthClient(client_id,client_secret,redirect_uri);
 ```
 
+note that here the `redirect_uri` should be same as what is used in the client side and also what is defined in App setting.
+
 then use the created client to get `access_token` and `user_id` and `user` data in the following way:
 
 
@@ -35,7 +37,8 @@ client.verifyUserData(code).then(result=>{
 });
 ```
 
- Note that you can only use the received code from the VK once and after that, it is expired. So if you plan to use other API methods too, use the following method first to get `access_token` and `user_id`  and then use that **token** and **user id** to do other API method calls.
+ Note that you can only use the received code from the VK once and after that, it is expired.
+  So if you plan to use other API methods too, save `access_token` and `user_id` too. As an alternative you can use the following method first to get `access_token` and `user_id`  and then use that **token** and **user id** to do other API method calls. If you want to get User can do it directly with following method in library
 
 ```
 client.getAccessToken(code).then(result=>{
@@ -69,7 +72,7 @@ Then for login you should add a button for example and add the following code:
 ```
 VK.Auth.login(function(response) {
       const {session:{expire,mid,secret,sid,sig}}=response;
-      if (session) {
+      if (sig) {
         fetch(`/auth/vk`, {
               credentials: "include",
               method: "POST",
@@ -78,7 +81,7 @@ VK.Auth.login(function(response) {
         })
 ```
 
-Here callback function in login should send the session data to backend. 
+Here callback function in login should send the session data to backend.
 In the back you should add the library and use it as below:
 
 
@@ -95,6 +98,3 @@ Here we can do three things:
 2- Get User Data from VK: ` const user=client.getUserProfile(mid);`
 
 3- Verify Login and Get User Data `client.verifyUserData({expire,mid,secret,sid,sig}).then(result=>{let user=result});`
-
-
-
