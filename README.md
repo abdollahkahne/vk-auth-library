@@ -59,11 +59,12 @@ All the three method return **promises** so can be used using `await` or `then/c
 
 ### Open ID
 To use Open ID version of VK Authentication you should first add the js library which developed by VK as follow. you can use it in main index.html  inside the body tag (and above other js framework code). You can get the implementation of this method in VK dev [here](https://vk.com/dev/openapi?f=2.1.%20Usual%20Initialization).
-In front end you should firt add this library:
+So the following steps should be done here:
+1- In **front end (Client-Side)** you should firt add this script tag inside body somewhere:
 
 `<script src="//vk.com/js/api/openapi.js" type="text/javascript"></script>`
 
-Then you should initialize it somewhere. for example in React code you can init it at `componentDidMount` life cycle. it initialize as below:
+Then you should initialize it somewhere (in a `script` tag in `index.html` or for example in React code you can init it at `componentDidMount` life cycle of Component). it initialize as below:
 
 ```
 VK.init({
@@ -82,11 +83,13 @@ VK.Auth.login(function(response) {
               method: "POST",
               headers: { "content-type": "application/json" },
               body: JSON.stringify({ data: {{expire,mid,secret,sid,sig}} }),
-        })
+        },permissionScope)
 ```
 
-Here callback function in login should send the session data to backend.
-In the back you should add the library and use it as below:
+Here callback function run after the success full login. in the permissionScope you can **optionally** sepcify an integer for permission level (Default is zero and by default you will access general user information after login but you can set other integer too according to VK permission scope masks).
+
+
+2- In the back (**Server-Side**) you should add the library and use it as below:
 
 
 ```
@@ -96,9 +99,17 @@ const client=OpenIDClient(client_id,client_secret,service_token);
 ```
 
 Here we can do three things:
+1- Verify Login and Get User Data:
+`client.verifyUserData({expire,mid,secret,sid,sig}).then(result=>{let {user}=result});`
 
-1- Verify Login: this do using the boolean function `client.verifySignature({expire,mid,secret,sid,sig})`;
 
-2- Get User Data from VK: ` const user=client.getUserProfile(mid);`
+2- Only Verify Login (Use the user info that you get at client-side or get user info by an additional method which defined in 3): this do using the boolean function:
 
-3- Verify Login and Get User Data `client.verifyUserData({expire,mid,secret,sid,sig}).then(result=>{let {user}=result});`
+`client.verifySignature({expire,mid,secret,sid,sig})`;
+
+3- Get User Data from VK ( This is done in behalf of App):
+` const user=client.getUserProfile(mid);`
+
+
+If you want to call other API's you can call them in behalf of App in server using the service code or in client side in behalf of loggedIn User using the following method:
+
