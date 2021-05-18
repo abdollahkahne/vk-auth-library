@@ -1,7 +1,8 @@
 This package supports two different type of Server-Side Authentication/Authorization Using VK.
 
-1-OAuth (For a simple example see [this](https://github.com/abdollahkahne/vk-oauth-sample))
-2-Open API (OpenID) (As an simple example see [this](https://github.com/abdollahkahne/vk-openapi-sample) )
+1-OAuth (For a simple example see [this](https://github.com/abdollahkahne/vk-oauth-sample)): This can be used for Both authentication and authorization. With this method you specify a callback for your app first. Int the client-side you only add a link to VK Authorize endpoint as described below. In Server-Side you implement the callback-uri you specify for your app and get an access token and user information. If you want to use other VK API in server-side, you can use that access token there. So it is some sort of Authorization too.
+
+2-Open API (OpenID) (As an simple example see [this](https://github.com/abdollahkahne/vk-openapi-sample) ): This only used for authentication. Here you can add an script from VK to client side and then for verification you can implement an API at the backend (with arbitary url) and verify user login in server-side and also get User Info (In behalf of your app). In this case if you want call other API you can only use the VK Script at client side (in behalf of user)
 
 For more information about other type of authentication and information abouth them in VK please visit this [discussion](https://github.com/abdollahkahne/Auth/discussions/2) in GitHub
 
