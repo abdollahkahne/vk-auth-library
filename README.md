@@ -108,8 +108,13 @@ Here we can do three things:
 `client.verifySignature({expire,mid,secret,sid,sig})`;
 
 3- Get User Data from VK ( This is done in behalf of App):
+
 ` const user=client.getUserProfile(mid);`
 
 
 If you want to call other API's you can call them in behalf of App in server using the service code or in client side in behalf of loggedIn User using the following method:
+
+`VK.Api.call(methodName,params,callback)`
+
+
 
